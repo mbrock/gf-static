@@ -8,5 +8,9 @@ RUN apk add --update bzip2-dev readline-dev readline-static \
 RUN cabal update && cabal install alex happy
 RUN apk add --update ncurses-static \
 && ln -s /usr/lib/libncursesw.a /usr/lib/libncurses.a
-RUN cabal install --disable-executable-dynamic --ghc-option=-optl-static --ghc-option=-optl-pthread gf
+ADD http://www.grammaticalframework.org/download/gf-3.9.tar.gz /root/gf
+WORKDIR /root/gf/gf-3.9
+RUN cabal install --disable-executable-dynamic --ghc-option=-optl-static --ghc-option=-optl-pthread
 RUN upx /root/.cabal/bin/gf
+RUN cabal build && mkdir gf-3.9-static && mv ~/.cabal/bin/gf gf-3.9-static && \
+mv dist/build/rgl gf-3.9-static && tar czf gf-3.9-static.tar.gz gf-3.9-static
